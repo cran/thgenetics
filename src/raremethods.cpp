@@ -548,8 +548,11 @@ void zstat_pathway_stat(const double *g, const int *m, const int *ng,
   // First we need to know how many unique genes there are...
   int P = *nperm, I = *naff, G = *ng, NGS=*ngsubset;
 
+  //cout << "P " << P << " I " << I << " G " << G << " NGS " << NGS << endl;
+
   int numGenes = 0;
-  THMALLOC(int, _genes, genes, G); //int genes[G];
+  THMALLOC(int, _genes, genes, G);
+  ///int genes[G];///
   for(int k=0; k<G; k++){
     bool geneFound = false;
     for(int cg=0; cg<numGenes; cg++)
@@ -562,7 +565,7 @@ void zstat_pathway_stat(const double *g, const int *m, const int *ng,
   }
   //cout << "**** There are " << numGenes << " genes found." << endl; // DEBUG ONLY
 
-  //int s[G], w[G];
+  ///int s[G], w[G];
   THMALLOC(int, _s, s, G);
   THMALLOC(int, _w, w, G);
   for(int k=0; k<G; k++){
@@ -572,11 +575,13 @@ void zstat_pathway_stat(const double *g, const int *m, const int *ng,
 
   // For each individual gene, make a note of the best genes in that step-up routine...
   //cout << "pathway c++ code -- making note of best genes" << endl;
-  THMALLOC2(int, _mask, mask, numGenes, G); //int mask[numGenes][G];
+  THMALLOC2(int, _mask, mask, numGenes, G);
+  ///int mask[numGenes][G]; ///
   for(int gene=0; gene<numGenes; gene++){
     //cout << gene << "/" << numGenes << endl;
     // set up the current mask to that gene
-    THMALLOC(int, _curmask, curmask, G); //int curmask[G];
+    THMALLOC(int, _curmask, curmask, G);
+    ///int curmask[G];
     for(int k=0; k<G; k++)
       curmask[k] = (genes[gene] == m[k]);
     // run that gene...
@@ -611,13 +616,15 @@ void zstat_pathway_stat(const double *g, const int *m, const int *ng,
 
 
   // then allow the pathway to choose from markers in any of the genes? how many is this??? or perhaps just a gene at a time <-- YES
-  THMALLOC(bool, _geneUsed, geneUsed, numGenes); //bool geneUsed[numGenes];
+  THMALLOC(bool, _geneUsed, geneUsed, numGenes);
+  ///bool geneUsed[numGenes];///
   for(int gene=0; gene<numGenes; gene++)
     geneUsed[gene] = false;
   double pvalue = 1.0;
-  THMALLOC(int, _finalmask, finalmask, G); //int finalmask[G];
+  THMALLOC(int, _finalmask, finalmask, G); /// THIS APPEARS TO BE THE OFFENDING LINE...
+  ///int finalmask[G];
   for(int k=0; k<G; k++)
-    finalmask[G] = 0;
+    finalmask[k] = 0;   /// here was the mistake
   bool keepGoing = true;
   while(keepGoing){
     int bestGene = -1;
@@ -671,6 +678,7 @@ void zstat_pathway_stat(const double *g, const int *m, const int *ng,
         cout << endl;
       }
     }
+    cout << "End of masks chosen." << endl;
   }
 
   *ret_pvalue = pvalue;
@@ -688,13 +696,16 @@ extern "C" {
 
     int P = *nperm, I = *naff;
 
+    //cout << "P" << P << " I" << I << endl;
+    //cout << "*ng" << *ng << endl;
+
     THMALLOC(double, _z, z, P+1); //double z[P+1];
     THMALLOC(double, _aff_perm, aff_perm, I); //double aff_perm[I];
     for(int i=0; i<I; i++)
       aff_perm[i] = aff[i];
 
     for(int p=0; p<=P; p++){
-      cout << "\r" << (double)p/(double)P*100 << "       ";
+      ///cout << "\r" << (double)p/(double)P*100 << "       ";
       zstat_pathway_stat(g, m, ng,  aff_perm, naff,  thresh,  gsubsetmatrix, ngsubset,  use_sign, use_weight, strategy,  nperm,  &z[p], p==0);
       //cout << "  pathway_stat z[" << p << "] = " << z[p] << endl;
       permute_double(aff, I, aff_perm);

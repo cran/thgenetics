@@ -1,6 +1,6 @@
 Package: thgenetics
-Version: 0.3-0
-Date: 2010-09-23
+Version: 0.3-1
+Date: 2011-01-13
 Title: Genetic Rare Variants Tests
 Author: Thomas Hoffmann <tjhoffm@gmail.com>
 Maintainer: Thomas Hoffmann <tjhoffm@gmail.com>
@@ -8,6 +8,6 @@ Description: Tests for genetic rare variants.
 License: GPL
 URL: http://sites.google.com/site/thomashoffmannproject/
 LazyLoad: true
-Packaged: 2010-09-23 16:54:38 UTC; tom
+Packaged: 2011-01-14 00:30:07 UTC; tom
 Repository: CRAN
-Date/Publication: 2010-09-23 19:59:58
+Date/Publication: 2011-01-14 11:59:55
