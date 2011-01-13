@@ -1,5 +1,6 @@
 //R CMD SHLIB raremethods.cpp
 
+#include <assert.h> // for almostGE
 #include <R.h>
 #include <Rmath.h>
 #include <math.h>
@@ -7,6 +8,21 @@
 using namespace std;
 
 #include "thmalloc.h"
+
+/** almostGE fix **/
+
+// inline int almostGE(float lhs, float rhs, int maxUlps=1){
+//   //http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
+//   assert(sizeof(float) == sizeof(int));
+//
+//   int intDiff = *(int *)&lhs - *(int *)&rhs;
+//   //cout << "(" << intDiff << ")";
+//   return(intDiff >= -maxUlps);
+// }
+
+inline int almostGE(double lhs, double rhs, double mult=100000000){
+  return((int)(lhs*mult) >= (int)(rhs*mult));
+}
 
 /** Random number generation **/
 
@@ -214,7 +230,7 @@ extern "C"{
     // calculate the means
     int K = *ng, I = *naff;
 
-    double tbar = 0; // could make extrenal? speed?
+    double tbar = 0;
     for(int i=0; i<I; i++)
       tbar += aff[i];
     tbar /= I;
@@ -284,7 +300,7 @@ void zstat2(const double *g, const int *m, const int *ng,
       wi[k] = 1.0;
   }else if(*use_weight == 1 || *use_weight == 2){
     // dichotomous
-    //double miu[G], niu[G], qi[G], ni[G]; //, wi[G];  // you stupid, fucking idiot!!!!! No wonder weighting wasn't working, they weren't really being set!!!!!!!!!!!! ARGHHHHHHHHHH!!!!!!!!!!!!!!!
+    //double miu[G], niu[G], qi[G], ni[G]; //, wi[G];
     THMALLOC(double, _miu, miu, G);
     THMALLOC(double, _niu, niu, G);
     THMALLOC(double, _qi, qi, G);
@@ -301,8 +317,8 @@ void zstat2(const double *g, const int *m, const int *ng,
           ni[c] += !isnan(g[r + c*N]);
         }//rof
         qi[c] = (miu[c] + 1.0) / (2.0*niu[c] + 2.0);
-        //wi[c] = 1.0 / sqrt(ni[c] * qi[c] * (1-qi[c])); // the weights... --> major fix, the weights were bloody inverted!!!
-        wi[c] = 1.0 / sqrt(qi[c] * (1-qi[c])); // the weights... --> major fix, the weights were bloody inverted!!!
+        //wi[c] = 1.0 / sqrt(ni[c] * qi[c] * (1-qi[c]));
+        wi[c] = 1.0 / sqrt(qi[c] * (1-qi[c]));
         //cout << wi[c] << ' ';
       }//fi
     }//rof
@@ -519,10 +535,10 @@ extern "C" {
 
     // basically mask stores the best mask...
 
-    // you need to be _very_ careful with += and /= with pointers -- don't use them, they actually add to the pointer, not the value!!!
     double pvalue = 0.0;
     for(int p=1; p<=P; p++)
-      pvalue += (int)(z[p] >= z[0]);
+      pvalue += almostGE(z[p], z[0]);
+    //  pvalue += (int)(z[p] >= z[0]);
     pvalue /= (double)P;
     *ret_pvalue = pvalue;
 
@@ -620,12 +636,12 @@ void zstat_pathway_stat(const double *g, const int *m, const int *ng,
   ///bool geneUsed[numGenes];///
   for(int gene=0; gene<numGenes; gene++)
     geneUsed[gene] = false;
-  double pvalue = 1.0;
+  double pvalue = 0.0;
   THMALLOC(int, _finalmask, finalmask, G); /// THIS APPEARS TO BE THE OFFENDING LINE...
   ///int finalmask[G];
   for(int k=0; k<G; k++)
     finalmask[k] = 0;   /// here was the mistake
-  bool keepGoing = true;
+  bool keepGoing = true, firsttime = true;
   while(keepGoing){
     int bestGene = -1;
     double bestGenePvalue = 0; // really a 'stat', _not_ a p-value...
@@ -657,12 +673,14 @@ void zstat_pathway_stat(const double *g, const int *m, const int *ng,
       }
     }
 
-    if(bestGenePvalue > pvalue){
+    if((bestGenePvalue > pvalue) || firsttime){
       // set the new pvalue, the gene used, and toggle that gene to be on...
       pvalue = bestGenePvalue;
       geneUsed[bestGene] = 1;
       for(int k=0; k<G; k++)
         finalmask[k] = finalmask[k] || mask[bestGene][k];
+
+      firsttime = false;
     }else{
       keepGoing = false;
     }
@@ -715,7 +733,8 @@ extern "C" {
 
     double pvalue = 0.0;
     for(int p=1; p<=P; p++)
-      pvalue += (int)(z[p] >= z[0]);
+      pvalue += almostGE(z[p], z[0]);
+    //  pvalue += (int)(z[p] >= z[0]);
     pvalue /= (double)P;
     *ret_pvalue = pvalue;
     //cout << "zstat_pathway_perm pvalue " << pvalue << endl;
