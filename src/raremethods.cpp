@@ -337,8 +337,9 @@ void zstat2(const double *g, const int *m, const int *ng,
     }
   }else{
     // error
-    cout << "ERROR: zstat2, (*use_weight) value is not possible (" << *use_weight << ")" << endl;
-    exit(1);
+    //cout << "ERROR: zstat2, (*use_weight) value is not possible (" << *use_weight << ")" << endl;
+    Rprintf("ERROR: zstat2, (*use_weight) value is not possible, do not use results.\n");
+    //exit(1);
   }
 
   // 2) compute the signs
@@ -392,8 +393,9 @@ void zstat2(const double *g, const int *m, const int *ng,
     }
     //cout << endl;
   }else{
-    cout << "ERROR: zstat2, (*use_sign) value is not possible (" << *use_sign << ")" << endl;
-    exit(1);
+    //cout << "ERROR: zstat2, (*use_sign) value is not possible (" << *use_sign << ")" << endl;
+    //exit(1);
+    Rprintf("ERROR: zstat2, (*use_sign) value is not possible, do not use results.\n");
   }
 
   // 3) and then pass these along and compute the test statistic!
@@ -522,8 +524,9 @@ extern "C" {
           }
         }else{
           // error!!!
-          cout << "ERROR: zstat_meta, (*strategy) is not possible (" << *use_sign << ")" << endl;
-          exit(1);
+          //cout << "ERROR: zstat_meta, (*strategy) is not possible (" << *use_sign << ")" << endl;
+          //exit(1);
+          Rprintf("ERROR: zstat2, (*use_sign) value is not possible, do not use results.\n");
         }
       }
 
@@ -687,16 +690,18 @@ void zstat_pathway_stat(const double *g, const int *m, const int *ng,
   }
 
   if(print){
-    cout << "Genes/masks chosen (gene starts at 0):" << endl;
+    //cout << "Genes/masks chosen (gene starts at 0):" << endl;
+    Rprintf("Genes/masks chosen (gene starts at 0):\n");
     for(int gene=0; gene<numGenes; gene++){
       if(geneUsed[gene]){
-        cout << "Gene " << gene << ": ";
+        //cout << "Gene " << gene << ": ";
+        Rprintf("Gene %i: ", gene);
         for(int k=0; k<G; k++)
-          cout << mask[gene][k];
-        cout << endl;
+          Rprintf("%i", mask[gene][k]); //cout << mask[gene][k];
+        Rprintf("\n"); //cout << endl;
       }
     }
-    cout << "End of masks chosen." << endl;
+    Rprintf("End of masks chosen.\n"); //cout << "End of masks chosen." << endl;
   }
 
   *ret_pvalue = pvalue;
