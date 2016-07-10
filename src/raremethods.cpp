@@ -74,7 +74,7 @@ extern "C" {
         ret_afreq[c] = 0;
         int n = 0;
         for(int r=0; r<N; r++){
-          if(!isnan(g[r + c*N])){
+          if(!ISNAN(g[r + c*N])){
             n++;
             ret_afreq[c] += g[r + c*N];
           }
@@ -96,7 +96,7 @@ extern "C" {
         ret_afreq_case[c] = ret_afreq_cont[c] = 0.0;
         int ncase = 0, ncont = 0;
         for(int r=0; r<N; r++){
-          if(!isnan(g[r + c*N])){
+          if(!ISNAN(g[r + c*N])){
             if(aff[r] == 1){
               ncase++;
               ret_afreq_case[c] += g[r + c*N];
@@ -312,9 +312,9 @@ void zstat2(const double *g, const int *m, const int *ng,
         for(int r=0; r<N; r++){
           if(aff[r] == 0) {
             miu[c] += g[r + c*N];
-            niu[c] += !isnan(g[r + c*N]);
+            niu[c] += !ISNAN(g[r + c*N]);
           }//fi
-          ni[c] += !isnan(g[r + c*N]);
+          ni[c] += !ISNAN(g[r + c*N]);
         }//rof
         qi[c] = (miu[c] + 1.0) / (2.0*niu[c] + 2.0);
         //wi[c] = 1.0 / sqrt(ni[c] * qi[c] * (1-qi[c]));
