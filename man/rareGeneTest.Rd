@@ -23,15 +23,22 @@ rarePathwayTest(genotype, genotype_gene, phenotype,
   \item{binary}{Is the phenotype dichotomous, or continuous? (TRUE/FALSE)}
   \item{strategy}{`step' uses the step-up routine (default, recommended), `afreq' tests all allele frequencies, and `thresh' uses a fixed threshold.}
   \item{thresh}{Allele frequency for inclusion, used only when \code{strategy}=`thresh'.}
-  \item{genotype_gene}{For \code{rarePathwayTest}, this is a vector of length \code{ncol(genotype)}. This can be strings to indicate what gene each variant is in; e.g. \code{c("brca1", "brca1", "brca1", "brca2", "brca2")} would indicate that the first three variants were in the first gene, and the last two variants are in the second gene. It can also be numeric.}
+  \item{genotype_gene}{For \code{rarePathwayTest}, this is a vector of length \code{ncol(genotype)}. This can be strings to indicate what gene each variant is in; e.g. 
+  \code{c("brca1",}
+  \code{"brca1",}
+  \code{"brca1",}
+  \code{"brca2",}
+  \code{"brca2")}
+  would indicate that the first three variants were in the first gene, and the last two variants are in the second gene. It can also be numeric.}
   \item{CUT}{For \code{rarePathwayTest}, genes bigger than \code{CUT} will be chopped into subpieces of size smaller than \code{CUT} (for computational speed).}
 }
 \details{
 The methods here are as described in the Hoffmann et al. (PLoS ONE, to appear) paper. These methods are based on the idea of trying multiple models for rare variants, since prior information is generally not very accurate. The p-value is corrected for multiple comparisons by permutation.
 }
 \examples{
-## This inefficient (for clarity) code will simulate a dataset in the
-##  correct format, and then run the different approaches described here.
+## This inefficient (for clarity) code will simulate
+##  a dataset in the correct format, and then run
+##  the different approaches described here.
 
 ## Constants for data generation
 SEED <- 2
@@ -55,7 +62,8 @@ for(indiv in 1:NCASE){
   affected <- FALSE
   while(!affected){ ## while not affected
     gcase[indiv, ] <- rbinom(NGENE, 2, afreq)  ## draw up genotype
-    affected <- (expit(BETA0 + BETAG*sum(gcase[indiv, FUNCTIONAL])) > runif(1))
+    affected <- (expit(BETA0 + 
+      BETAG*sum(gcase[indiv, FUNCTIONAL])) > runif(1))
   }
 }
 cat("\n")
@@ -66,15 +74,20 @@ for(indiv in 1:NCONT){
   unaffected <- FALSE
   while(!unaffected){ ## while not unaffected
     gcont[indiv, ] <- rbinom(NGENE, 2, afreq) ## draw up genotype
-    unaffected <- (1-expit(BETA0 + BETAG*sum(gcont[indiv, FUNCTIONAL])) > runif(1))
+    unaffected <- (1-expit(BETA0 +
+      BETAG*sum(gcont[indiv, FUNCTIONAL])) > runif(1))
   }
 }
 cat("\n")
 
-cat("# Rare functional variants cases =", sum(gcase[,FUNCTIONAL]), "\n")
-cat("# Rare functional variants controls =", sum(gcont[,FUNCTIONAL]), "\n")
-cat("# Rare non-functional variants cases =", sum(gcase[,nonfunctional]), "\n")
-cat("# Rare non-functional variants controls =", sum(gcont[,nonfunctional]), "\n")
+cat("# Rare functional variants cases =", 
+  sum(gcase[,FUNCTIONAL]), "\n")
+cat("# Rare functional variants controls =",
+  sum(gcont[,FUNCTIONAL]), "\n")
+cat("# Rare non-functional variants cases =",
+  sum(gcase[,nonfunctional]), "\n")
+cat("# Rare non-functional variants controls =",
+  sum(gcont[,nonfunctional]), "\n")
 
 case <- c(rep(1,NCASE), rep(0,NCONT))
 genotype <- rbind(gcase, gcont)
@@ -83,6 +96,6 @@ cat("P-value of the test:\n")
 rareGeneTest(genotype, case)
 }
 \references{
-Hoffmann, TJ, Marini, NJ, and Witte, JS. Comprehensive approach to analyzing rare variants. PLoS ONE, to appear.
+Hoffmann, TJ, Marini, NJ, and Witte, JS. Comprehensive approach to analyzing rare variants. PLoS ONE, 5(11): e13584. https://doi.org/10.1371/journal/pone.0013584.
 }
 \keyword{interface}

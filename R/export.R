@@ -35,7 +35,7 @@ rareGeneTest <- function(genotype, phenotype, use_sign=TRUE, use_weight=TRUE, np
     stop("'strategy' should be one of 'thresh', 'afreq', or 'step'.")
   }
 
-  pvalue = zstat_perm(g=as.matrix(genotype), aff=phenotype, use_sign=use_sign, use_weight=p_use_weight, strategy=p_strategy, nperm=nperm, thresh=thresh)
+  pvalue = zstat_perm_R(g=as.matrix(genotype), aff=phenotype, use_sign=use_sign, use_weight=p_use_weight, strategy=p_strategy, nperm=nperm, thresh=thresh)
   return(pvalue)
 }
 
@@ -64,6 +64,6 @@ rarePathwayTest <- function(genotype, genotype_gene, phenotype, use_sign=TRUE, u
   if(!binary & use_weight)
     p_use_weight = 3
 
-  pvalue = zstat_pathway_perm(g=as.matrix(genotype), m=genotype_gene, aff=phenotype, use_sign=use_sign, use_weight=p_use_weight, strategy=3, nperm=nperm)
+  pvalue = zstat_pathway_perm_R(g=as.matrix(genotype), m=genotype_gene, aff=phenotype, use_sign=use_sign, use_weight=p_use_weight, strategy=3, nperm=nperm)
   return(pvalue)
 }

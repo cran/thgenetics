@@ -1,6 +1,6 @@
 ## Cleaned up version of raremethods.R in the sims folder
 
-zstat_perm = function(g, m=rep(1,ncol(g)),
+zstat_perm_R = function(g, m=rep(1,ncol(g)),
                       aff,
                       thresh=1,
                       gsubsetmatrix=NULL,
@@ -10,19 +10,21 @@ zstat_perm = function(g, m=rep(1,ncol(g)),
   if(is.null(gsubsetmatrix))
     gsubsetmatrix = matrix(1,nrow=1, ncol=length(m))
 
-  .C("zstat_perm",
+  CRET = .C("zstat_perm",
      as.double(g), as.integer(m), as.integer(length(m)),
      as.double(aff), as.integer(length(aff)),
      as.double(thresh),
      as.integer(gsubsetmatrix), as.integer(nrow(gsubsetmatrix)),
      as.integer(use_sign), as.integer(use_weight), as.integer(strategy),
      as.integer(nperm),
-     ret_pvalue, DUP=FALSE)
+     ret_pvalue=ret_pvalue) #, DUP=FALSE) # DUP was disabled!
+     
+  ret_pvalue = CRET$ret_pvalue
 
   return(ret_pvalue)
 }
 
-zstat_pathway_perm = function(g, m=rep(1, ncol(g)),
+zstat_pathway_perm_R = function(g, m=rep(1, ncol(g)),
                               aff,
                               thresh=1,
                               gsubsetmatrix=NULL,
@@ -36,14 +38,16 @@ zstat_pathway_perm = function(g, m=rep(1, ncol(g)),
   if(is.null(gsubsetmatrix))
     gsubsetmatrix = matrix(1, nrow=1, ncol=length(m))
 
-  .C("zstat_pathway_perm",
+  CRET = .C("zstat_pathway_perm",
     as.double(g), as.integer(m), as.integer(length(m)),
     as.double(aff), as.integer(length(aff)),
     as.double(thresh),
     as.integer(gsubsetmatrix), as.integer(nrow(gsubsetmatrix)),
     as.integer(use_sign), as.integer(use_weight), as.integer(strategy),
     as.integer(nperm),
-    ret_pvalue, DUP=FALSE)
+    ret_pvalue=ret_pvalue) #, DUP=FALSE)
 
+  ret_pvalue = CRET$ret_pvalue
+    
   return(ret_pvalue)
 }

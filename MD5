@@ -1,7 +1,8 @@
-67838337d316ab4f8dc09bf6e2ac4a71 *DESCRIPTION
-4eef0c6f69b5d6213a126f2e42a35d4e *NAMESPACE
-bf4417fb0490790c5742e982c5072eab *R/export.R
-50cbaf9f275980ee2463ac86b218f782 *R/raremethods-clean.R
-453f0ba3c6b627f5b9cc31c1e388fc62 *man/rareGeneTest.Rd
-19013be75ca42702ec6cd17dbb822f60 *src/raremethods.cpp
+5f60b04fccdccbe62554c71afd85efae *DESCRIPTION
+0a1911e0c71070af346541c391b21b3e *NAMESPACE
+6d909f662bdc36ba8d006c58224b6f75 *R/export.R
+931988f5e8fcb8cb9cdbf480401976fa *R/raremethods-clean.R
+2f8831276b11f41f4834fe27fa3eaba4 *man/rareGeneTest.Rd
+eb35b200ff7ca31806633c250f5c893e *src/raremethods.cpp
+9e7295d8263af44b909b9c400dd6d853 *src/thgenetics_init.c
 a2de2275b1f343ae0682b72044d07112 *src/thmalloc.h

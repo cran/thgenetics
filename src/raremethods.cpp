@@ -74,7 +74,7 @@ extern "C" {
         ret_afreq[c] = 0;
         int n = 0;
         for(int r=0; r<N; r++){
-          if(!ISNAN(g[r + c*N])){
+          if(!isnan(g[r + c*N])){
             n++;
             ret_afreq[c] += g[r + c*N];
           }
@@ -96,7 +96,7 @@ extern "C" {
         ret_afreq_case[c] = ret_afreq_cont[c] = 0.0;
         int ncase = 0, ncont = 0;
         for(int r=0; r<N; r++){
-          if(!ISNAN(g[r + c*N])){
+          if(!isnan(g[r + c*N])){
             if(aff[r] == 1){
               ncase++;
               ret_afreq_case[c] += g[r + c*N];
@@ -139,7 +139,8 @@ extern "C" {
                     const int *nindiv, const int *ng,
                     double *afreq, double *uafreq, int *nuafreq){ // returns, really should be named that way...
     // get all unique allele frequencies (sorted as well for debug) --> afreq, nafreq
-    int N = *nindiv, G = *ng;
+    //int N = *nindiv, G = *ng;
+    int G = *ng;
     for(int i=0; i<G; i++)
       afreq[i] = 0;
     gAfreq(g, gcols, nindiv, ng, afreq);
@@ -312,9 +313,9 @@ void zstat2(const double *g, const int *m, const int *ng,
         for(int r=0; r<N; r++){
           if(aff[r] == 0) {
             miu[c] += g[r + c*N];
-            niu[c] += !ISNAN(g[r + c*N]);
+            niu[c] += !isnan(g[r + c*N]);
           }//fi
-          ni[c] += !ISNAN(g[r + c*N]);
+          ni[c] += !isnan(g[r + c*N]);
         }//rof
         qi[c] = (miu[c] + 1.0) / (2.0*niu[c] + 2.0);
         //wi[c] = 1.0 / sqrt(ni[c] * qi[c] * (1-qi[c]));
@@ -435,7 +436,7 @@ extern "C" {
     // gear up to compute the test statistic
     THMALLOC(double, _z, z, P+1); //double z[P + 1]; // z[0] is the observed...
     THMALLOC(double, _aff_perm, aff_perm, I); //double aff_perm[I];
-    THMALLOC(int, _mbest, mbest, G); //int mbest[G];
+    //THMALLOC(int, _mbest, mbest, G); //int mbest[G];  // NEW VAR NOT USED?
 
     // for the initial, we want to calculate the observed
     //memcpy(aff, aff_perm, sizeof(double)*I);
@@ -464,7 +465,7 @@ extern "C" {
           for(int ua=0; ua<nuafreq; ua++){
             THMALLOC(int, _m2, m2, G); //int m2[G];
             for(int k=0; k<G; k++)
-              m2[k] = (int)((msub[k] != 0) & (afreq[k] <= uafreq[ua]));
+              m2[k] = (int)((msub[k] != 0) && (afreq[k] <= uafreq[ua]));
             zstat2(g, m, ng,  aff_perm, naff,  use_sign, use_weight,  &znew);
             if(znew > z[p]) z[p] = znew; // store it if better
           }
@@ -565,7 +566,8 @@ void zstat_pathway_stat(const double *g, const int *m, const int *ng,
                   bool print) {
 
   // First we need to know how many unique genes there are...
-  int P = *nperm, I = *naff, G = *ng, NGS=*ngsubset;
+  //int P = *nperm, I = *naff, G = *ng, NGS=*ngsubset;
+  int G = *ng;
 
   //cout << "P " << P << " I " << I << " G " << G << " NGS " << NGS << endl;
 

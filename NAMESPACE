@@ -1,2 +1,2 @@
 export(rareGeneTest, rarePathwayTest)
-useDynLib(thgenetics)
+useDynLib(thgenetics, .registration=TRUE)
