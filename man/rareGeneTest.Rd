@@ -58,7 +58,6 @@ expit <- function(x)
 
 gcase <- matrix(0, nrow=NCASE, ncol=NGENE)
 for(indiv in 1:NCASE){
-  cat("\rgenerating case:", indiv, "of", NCASE)
   affected <- FALSE
   while(!affected){ ## while not affected
     gcase[indiv, ] <- rbinom(NGENE, 2, afreq)  ## draw up genotype
@@ -70,7 +69,6 @@ cat("\n")
 
 gcont <- matrix(0, nrow=NCONT, ncol=NGENE)
 for(indiv in 1:NCONT){
-  cat("\rgenerating control:", indiv, "of", NCONT)
   unaffected <- FALSE
   while(!unaffected){ ## while not unaffected
     gcont[indiv, ] <- rbinom(NGENE, 2, afreq) ## draw up genotype
